@@ -7,6 +7,9 @@ test: build
 	$(BASE_COMMAND) run test
 	$(BASE_COMMAND) down
 
+mtest:
+	$(BASE_COMMAND) run test
+
 update:
 	$(BASE_COMMAND) run test composer update
 	$(BASE_COMMAND) down

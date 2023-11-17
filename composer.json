@@ -15,12 +15,14 @@
     "google/cloud-spanner": "^1.47",
     "grpc/grpc": "^1.42",
     "symfony/cache": "~6",
-    "symfony/lock": "~6"
+    "symfony/lock": "~6",
+    "phpmd/phpmd": "^2.13"
   },
   "require-dev": {
     "orchestra/testbench": "~8",
     "phpunit/phpunit": "~10.0",
-    "phpstan/phpstan": "^1"
+    "phpstan/phpstan": "^1",
+    "squizlabs/php_codesniffer": "*"
   },
   "autoload": {
     "psr-4": {
@@ -49,4 +51,3 @@
     "ext-sysvshm": "Can use SemaphoreLock for session handling. Will use FileLock if not present."
   }
 }
-

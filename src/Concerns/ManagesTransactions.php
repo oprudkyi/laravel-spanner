@@ -52,33 +52,35 @@ trait ManagesTransactions
             return parent::transaction($callback, $attempts);
         }
 
-        return $this->withSessionNotFoundHandling(function () use ($callback, $attempts) {
-            $return = $this->getSpannerDatabase()->runTransaction(function (Transaction $tx) use ($callback) {
-                try {
-                    $this->currentTransaction = $tx;
+        return $this->withEmulatorLockHandling(function () use ($callback, $attempts) {
+            return $this->withSessionNotFoundHandling(function () use ($callback, $attempts) {
+                $return = $this->getSpannerDatabase()->runTransaction(function (Transaction $tx) use ($callback) {
+                    try {
+                        $this->currentTransaction = $tx;
 
-                    $this->transactions++;
+                        $this->transactions++;
 
-                    $this->transactionsManager?->begin(
-                        $this->getName(), $this->transactions
-                    );
+                        $this->transactionsManager?->begin(
+                            $this->getName(), $this->transactions
+                        );
 
-                    $this->fireConnectionEvent('beganTransaction');
+                        $this->fireConnectionEvent('beganTransaction');
 
-                    $result = $callback($this);
+                        $result = $callback($this);
 
-                    $this->performSpannerCommit();
+                        $this->performSpannerCommit();
 
-                    return $result;
-                } catch (Throwable $e) {
-                    $this->rollBack();
-                    throw $e;
-                }
-            }, ['maxRetries' => $attempts - 1]);
+                        return $result;
+                    } catch (Throwable $e) {
+                        $this->rollBack();
+                        throw $e;
+                    }
+                }, ['maxRetries' => $attempts - 1]);
 
-            $this->fireConnectionEvent('committed');
+                $this->fireConnectionEvent('committed');
 
-            return $return;
+                return $return;
+            });
         });
     }
 

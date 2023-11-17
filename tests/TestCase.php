@@ -134,10 +134,12 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         foreach ($this->app['db']->getConnections() as $conn) {
             if ($conn instanceof Connection) {
-                foreach ($conn->select("SELECT t.table_name FROM information_schema.tables as t WHERE t.table_schema = ''") as $row) {
-                    $conn->table($row['table_name'])->truncate();
+                if ($conn->databaseExists()) {
+                    foreach ($conn->select("SELECT t.table_name FROM information_schema.tables as t WHERE t.table_schema = ''") as $row) {
+                        $conn->table($row['table_name'])->truncate();
+                    }
+                    $conn->clearSessionPool();
                 }
-                $conn->clearSessionPool();
             }
         }
     }

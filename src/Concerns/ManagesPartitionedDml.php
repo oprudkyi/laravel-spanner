@@ -33,16 +33,18 @@ trait ManagesPartitionedDml
      */
     public function runPartitionedDml($query, $bindings = [])
     {
-        return $this->run($query, $bindings, function ($query, $bindings) {
-            if ($this->pretending()) {
-                return 0;
-            }
+        return $this->withEmulatorLockHandling(function () use ($query, $bindings) {
+            return $this->run($query, $bindings, function ($query, $bindings) {
+                if ($this->pretending()) {
+                    return 0;
+                }
 
-            $rowCount = $this->getSpannerDatabase()->executePartitionedUpdate($query, ['parameters' => $this->prepareBindings($bindings)]);
+                $rowCount = $this->getSpannerDatabase()->executePartitionedUpdate($query, ['parameters' => $this->prepareBindings($bindings)]);
 
-            $this->recordsHaveBeenModified($rowCount > 0);
+                $this->recordsHaveBeenModified($rowCount > 0);
 
-            return $rowCount;
+                return $rowCount;
+            });
         });
     }
 }

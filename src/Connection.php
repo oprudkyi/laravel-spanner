@@ -52,6 +52,7 @@ class Connection extends BaseConnection
         Concerns\ManagesSessionPool,
         Concerns\ManagesTransactions,
         Concerns\ManagesStaleReads,
+        Concerns\ManagesEmulator,
         Concerns\MarksAsNotSupported;
 
     /**

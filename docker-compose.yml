@@ -3,7 +3,12 @@ services:
   test:
     build:
       context: .
-    command: /bin/sh -c "composer install --no-progress && vendor/bin/phpstan --no-progress --memory-limit=-1 && vendor/bin/phpunit"
+    #command: /bin/sh -c "composer install --no-progress && vendor/bin/phpstan --no-progress --memory-limit=-1 && vendor/bin/phpunit"
+    #command: /bin/sh -c "vendor/bin/phpstan --no-progress --memory-limit=-1"
+    #command: /bin/sh -c "vendor/bin/phpunit"
+    #command: /bin/sh -c "vendor/bin/phpunit  --verbose --filter=EmulatorLockTest"
+    #command: /bin/sh -c "vendor/bin/phpunit  --verbose --filter=testLockTimeout"
+    command: /bin/sh -c "vendor/bin/phpunit --filter=testTwoTransaction"
     volumes:
       - .:/project:delegated
     depends_on:
